@@ -43,3 +43,6 @@ experimental
 
 # exclude types, see https://github.com/puppeteer/puppeteer/issues/3878
 /index.d.ts
+
+# lib is excluded because we want the out dir
+/lib

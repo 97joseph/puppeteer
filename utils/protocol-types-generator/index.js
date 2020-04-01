@@ -77,7 +77,6 @@ export default Protocol;
   console.log(`Wrote protocol.d.ts for ${version} to ${path.relative(process.cwd(), outputPath)}`);
 });
 
-
 /**
  * @typedef {Object} Property
  * @property {string=} $ref

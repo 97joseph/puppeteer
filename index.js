@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-const {helper} = require('./lib/helper');
-const api = require('./lib/api');
+const {helper} = require('./out/helper');
+const api = require('./out/api');
 for (const className in api) {
   // Puppeteer-web excludes certain classes from bundle, e.g. BrowserFetcher.
   if (typeof api[className] === 'function')
@@ -23,7 +23,7 @@ for (const className in api) {
 }
 
 // If node does not support async await, use the compiled version.
-const Puppeteer = require('./lib/Puppeteer');
+const Puppeteer = require('./out/Puppeteer');
 const packageJson = require('./package.json');
 const preferredRevision = packageJson.puppeteer.chromium_revision;
 const isPuppeteerCore = packageJson.name === 'puppeteer-core';
