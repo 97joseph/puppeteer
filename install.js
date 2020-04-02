@@ -84,7 +84,6 @@ async function download() {
 
     // Do nothing if the revision is already downloaded.
     if (revisionInfo.local) {
-      generateProtocolTypesIfNecessary(false /* updated */, product);
       logPolitely(`${supportedProducts[product]} is already in ${revisionInfo.folderPath}; skipping download.`);
       return;
     }
@@ -109,7 +108,7 @@ async function download() {
       logPolitely(`${supportedProducts[product]} (${revisionInfo.revision}) downloaded to ${revisionInfo.folderPath}`);
       localRevisions = localRevisions.filter(revision => revision !== revisionInfo.revision);
       const cleanupOldVersions = localRevisions.map(revision => browserFetcher.remove(revision));
-      Promise.all([...cleanupOldVersions, generateProtocolTypesIfNecessary(true /* updated */, product)]);
+      Promise.all([...cleanupOldVersions]);
     }
 
     /**
@@ -147,18 +146,6 @@ async function download() {
   function toMegabytes(bytes) {
     const mb = bytes / 1024 / 1024;
     return `${Math.round(mb * 10) / 10} Mb`;
-  }
-
-  function generateProtocolTypesIfNecessary(updated, product) {
-    if (product !== 'chrome')
-      return;
-    const fs = require('fs');
-    const path = require('path');
-    if (!fs.existsSync(path.join(__dirname, 'utils', 'protocol-types-generator')))
-      return;
-    if (!updated && fs.existsSync(path.join(__dirname, 'src', 'protocol.d.ts')))
-      return;
-    return require('./utils/protocol-types-generator');
   }
 
   function getFirefoxNightlyVersion(host) {

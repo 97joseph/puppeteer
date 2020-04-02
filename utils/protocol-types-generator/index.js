@@ -72,9 +72,10 @@ declare global {
 
 export default Protocol;
 `;
-  const outputPath = path.join(__dirname, '..', '..', 'lib', 'protocol.d.ts');
+  const outputPath = path.join(__dirname, '..', '..', 'src', 'protocol.d.ts');
   require('fs').writeFileSync(outputPath, output);
   console.log(`Wrote protocol.d.ts for ${version} to ${path.relative(process.cwd(), outputPath)}`);
+  console.log(`You should commit the changes.`);
 });
 
 /**
