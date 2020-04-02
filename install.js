@@ -16,11 +16,14 @@
 
 const fs = require('fs');
 const path = require('path');
+const child_process = require('child_process');
 const {promisify} = require('util');
 
 const LIB_PATH = path.join(__dirname, 'lib');
 
 const fsAccess = promisify(fs.access);
+
+const exec = promisify(child_process.exec);
 
 const fileExists = async filePath => fsAccess(filePath).then(() => true).catch(() => false);
 
@@ -38,25 +41,25 @@ const supportedProducts = {
   'firefox': 'Firefox Nightly'
 };
 
-async function ensureLibExists() {
-  console.log(LIB_PATH);
+async function compileTypeScript() {
+  return exec('npm run tsc').catch(err => {
+    console.error('Error running TypeScript', err);
+    process.exit(1);
+  });
+}
+
+async function ensureLibDirectoryExists() {
   const libExists = await fileExists(LIB_PATH);
 
   if (libExists) return;
 
-  console.log('Warning: you need to compile Puppeteer before installing it locally.');
-  console.log(`
-  Run this command in your terminal:
-    npm run tsc
-  And then run this script again:
-    node install.js`);
-
-  process.exit(1);
+  logPolitely('Compiling TypeScript before install...');
+  await compileTypeScript();
 }
 
 async function download() {
+  await ensureLibDirectoryExists();
 
-  await ensureLibExists();
   const downloadHost = process.env.PUPPETEER_DOWNLOAD_HOST || process.env.npm_config_puppeteer_download_host || process.env.npm_package_config_puppeteer_download_host;
   const puppeteer = require('./index');
   const product = process.env.PUPPETEER_PRODUCT || process.env.npm_config_puppeteer_product || process.env.npm_package_config_puppeteer_product || 'chrome';
