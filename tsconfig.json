@@ -6,6 +6,6 @@
     "target": "ESNext"
   },
   "include": [
-    "lib"
+    "src"
   ]
 }
